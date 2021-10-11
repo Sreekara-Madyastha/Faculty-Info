@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <form action="/coursesearch" autocomplete="off" method="post">
+            <input list="departments" name="depselect" placeholder="{{ DId }}" >
+                <datalist id="departments">
+                    {% for i in departments %}
+                        <option value="{{ i[0] }}">
+                    {% endfor %}
+                </datalist>
+                <input type="submit">
+        </form>
+        <form action="/facultysearch" autocomplete="off" method="post">
+            <input list="Faculty" name="facultysel" placeholder="{{ FId }}">
+                <datalist id="Faculty">
+                    {% for i in fac %}
+                        <option value="{{i[0]}}">{{i[1]}}</option>
+                    {% endfor %}
+                </datalist>
+                <input type="submit">
+        </form>
+        <form action="/semsearch" autocomplete="off" method="post">
+            <input list="Semester" name="semsearch" placeholder="{{ Sem }}">
+                <datalist id="Semester">
+                    {% for i in sem %}
+                        <option value="{{i[0]}}">
+                    {% endfor %}
+                </datalist>
+            <input type="submit">
+        </form>
+            {% if res!=NULL %}
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th>Course-ID</th>
+                    <th>CourseName</th>
+                    <th>Faculty ID</th>
+                    <th>Faculty Name</th>
+                    <th>Semester</th>
+                    <th>No.of Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in res %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                            <td>{{ i[2] }}</td>
+                            <td>{{ i[3] }}</td>
+                            <td>{{ i[4] }}</td>
+                            <td>{{ i[5] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            {% endif %}
+            {% if facres!=NULL %}
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th>Faculty ID</th>
+                    <th>Faculty Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in facres %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            {% endif %}
+            {% if courses!=NULL %}
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Course-ID</th>
+                        <th>CourseName</th>
+                        <th>Faculty ID</th>
+                        <th>Faculty Name</th>
+                        <th>No.of Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in courses %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                            <td>{{ i[2] }}</td>
+                            <td>{{ i[3] }}</td>
+                            <td>{{ i[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            {% endif %}
+    </body>
+</html>
