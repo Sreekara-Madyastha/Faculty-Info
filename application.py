@@ -1,19 +1,19 @@
-from flask import Flask,render_template,redirect,request,session,jsonify
+import re
+from flask import Flask, render_template, request, redirect, session, jsonify
 from flask.scaffold import F
 from flask_session import Session
 import mysql.connector
+
 app = Flask(__name__)
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Sreek@r123",
+  password="enter_your_local_password",
   database="courses_faculty"
 )
 mycursor=mydb.cursor()
-
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
 sem=[]
 
 @app.route("/")
@@ -100,3 +100,11 @@ def semsearch():
   mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE taughtby.Semester=%s AND taughtby.FId LIKE %s',(semsearch,FId,))
   courses=mycursor.fetchall()
   return render_template('home.html',courses=courses,FId=FId,sem=sem,Sem=semsearch,DId=DId)
+        
+
+
+
+  
+
+if __name__ == '__main__':
+  app.run(debug=True)
