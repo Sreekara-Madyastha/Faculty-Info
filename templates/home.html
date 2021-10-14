@@ -23,8 +23,12 @@
                 </div>
                 <div class="col-md-4">
                   <label for="sem" class="form-label">SEMESTER</label>
-                  <input list="Semester" name="semsearch" placeholder="{{ semester }}" class="form-control" id="sem">
+                  <input list="Semester" name="fromsem" placeholder="{{ fromsem }}" class="form-control" id="sem">
                 </div>
+                <div class="col-md-4">
+                    <label for="sem" class="form-label">SEMESTER</label>
+                    <input list="Semester" name="tillsem" placeholder="{{ tillsem }}" class="form-control" id="sem">
+                  </div>
                 <div class="col-12">
                   <button type="submit" class="btn btn-primary">SUBMIT</button>
                 </div>
@@ -74,7 +78,44 @@
                 </tbody>
               </table>
         {% endif %}
-   
-            </div>
+        </div>
+        <div class="container">
+            <form action="/coursesearch" method="post" >
+                <input name="depforcourse" list="departments">
+                <input type="submit">
+                <input name="selected_course" list="courselist">
+                <datalist id="courselist">
+                  {% for i in coursesel %}
+                      <option value="{{i[0]}}">{{ i[] }}</option>
+                  {% endfor %}
+                </datalist>
+                <input type="submit">
+            </form>
+            {% if courstim!=NULL %}
+
+            <table class="table table-dark table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">DAY</th>
+                  <th scope="col">TIME</th>
+                  <th scope="col">ROOM</th>
+                  <th scope="col">DURATION</th>
+                  <th scope="col">Faculty</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {% for i in courstim %}
+                  <th scope="row">{{i[0]}}</th>
+                      <td>{{ i[1] }}</td>
+                      <td>{{ i[2] }}</td>
+                      <td>{{ i[3] }}</td>
+                      <td>{{ i[4] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+        </div>
     </body>
 </html>

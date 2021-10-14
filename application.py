@@ -1,5 +1,3 @@
-
-import re
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask.scaffold import F
 from flask_session import Session
@@ -73,48 +71,58 @@ def signup():
 def logout():
   session["userID"] = None
   return redirect("/login")
-# DId=""
 
+def greater(a,b):
+  [sem1,year1]=a.split(" ")
+  [sem2,year2]=b.split(" ")
+  if(year1==year2):
+    if sem1=='Autumn' and sem2=='Spring':
+      return False
+    else:
+      return True
+  else:
+    return year1<year2
+def filter(result,sem1,sem2):
+  sol=[]
+  if sem1=="":
+    return result
+  else:
+    if sem2=="":
+      for i in result:
+        if greater(sem1,i[4])==True:
+          sol+=i
+    else:
+      for i in result:
+        if greater(sem1,i[4])==True and greater(i[4],sem2):
+          sol.append(i)
+    return sol
+      
 
-# @app.route('/coursesearch',methods=["GET","POST"])
-# def coursesearch():
-#     global DId 
-#     DId= request.form.get('depselect')
-#     res=""
-#     mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE courses.DId=%s',(DId,))
-#     res=mycursor.fetchall()
-#     mycursor.execute('SELECT taughtby.FId,faculty.FName FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE courses.DId=%s',(DId,))
-#     fac=mycursor.fetchall()
-#     fac = my_function(fac)
-#     return render_template('home.html',res=res,DId=DId,fac=fac,sem=sem)
-# FId=""
-# @app.route('/facultysearch',methods=["GET","POST"])
-# def facsearch():
-#   FId=request.form.get('facultysel')
-#   mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId=%s AND taughtby.FId=%s)',(DId,FId,))
-#   facres=mycursor.fetchall()
-#   return render_template('home.html',facres=facres,FId=FId,DId=DId,sem=sem)
-# semsearch=""
-# @app.route('/semsearch',methods=["GET","POST"])
-# def semsearch():
-#   global semsearch
-#   semsearch=request.form.get('semsearch')
-#   mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE taughtby.Semester=%s AND taughtby.FId LIKE %s',(semsearch,FId,))
-#   courses=mycursor.fetchall()
-#   return render_template('home.html',courses=courses,FId=FId,sem=sem,Sem=semsearch,DId=DId)
-        
 @app.route('/search',methods=["GET","POST"])
 def search():
+  sem1=request.form.get('fromsem')
+  sem2=request.form.get('tillsem')
   if request.form.get('facselect')!="" :
-    mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s AND taughtby.Semester LIKE %s)',('%'+request.form.get('depselect')+'%',request.form.get('facselect'),'%'+request.form.get('semsearch')+'%'))
+    mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s)',('%'+request.form.get('depselect')+'%',request.form.get('facselect')))
     result=mycursor.fetchall()
+    result=filter(result,sem1,sem2)
   else:
-    mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s AND taughtby.Semester LIKE %s)',('%'+request.form.get('depselect')+'%',"%",'%'+request.form.get('semsearch')+'%'))
+    mycursor.execute('SELECT taughtby.CId,courses.CName,taughtby.FId,faculty.FName,taughtby.Semester,taughtby.NumStudents FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s)',('%'+request.form.get('depselect')+'%',"%"))
     result=mycursor.fetchall()
+    result=filter(result,sem1,sem2)
   # print(result)
-  return render_template('home.html',result=result,FId=request.form.get('facselect'),DId=request.form.get('depselect'),semester=request.form.get('semsearch'),departments=departments,fac=fac,sem=sem)
+  return render_template('home.html',result=result,FId=request.form.get('facselect'),DId=request.form.get('depselect'),tillsem=request.form.get('tillsem'),fromsem=request.form.get('fromsem'),departments=departments,fac=fac,sem=sem)
 
-
+@app.route('/coursesearch',methods=["GET","POST"])
+def course():
+  if request.form.get('selected_course')!="":
+    mycursor.execute('SELECT timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester LIKE %s)',(request.form.get('selected_course'),'%'))
+    courstim=mycursor.fetchall()
+    return render_template('home.html',courstim=courstim, departments=departments)
+  else:
+    mycursor.execute('SELECT * FROM courses WHERE DId=%s',(request.form.get('depforcourse'),))
+    coursesel=mycursor.fetchall()
+    return render_template('home.html',coursesel=coursesel, departments=departments)
   
 
 if __name__ == '__main__':
