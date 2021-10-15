@@ -1,5 +1,7 @@
 
+from dns.rdatatype import NULL
 from flask import Flask, render_template, request, redirect, session
+from flask_session import Session
 import mysql.connector
 import os
 
@@ -12,7 +14,9 @@ mydb = mysql.connector.connect(
   database="courses_faculty"
 )
 mycursor=mydb.cursor()
-
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 def my_function(x):
   return list(dict.fromkeys(x))
 
@@ -89,29 +93,22 @@ def begin():
 @app.route('/login')
 def login():
     return render_template('login.html')
-
+@app.route('/logout')
+def logout():
+    session['AId']=None
+    return redirect('/home')
 
 @app.route('/login_validation', methods=['POST'])
 def login_validation():
     Username = request.form.get('Username')
     password = request.form.get('password')
-
-    mycursor.execute("""select * from `authorizedPersonell` where `Username` = '{}' and `Password` = '{}'""".format(Username, password))
+    mycursor.execute('SELECT * FROM authorizedPersonell WHERE Username=%s AND Password=%s',(Username,password))
     users = mycursor.fetchall()
-
     if len(users) > 0:
         session['AId'] = users[0][0]
-        return redirect('/access')
+        return redirect('/home')
     else:
         return render_template('login.html', error_message="Invalid Username or Password")
-
-
-@app.route('/access')
-def home():
-    if 'AId' in session:
-        return render_template('access.html')
-    else:
-        return redirect('/login')
 
 
 @app.route('/register')
@@ -131,6 +128,10 @@ def add_user():
 
     return render_template('login.html', after_reg_message="Account created successfully! Login to proceed")
 
+@app.route('/change',methods=["GET","POST"])
+def change():
+  if request.form.get('operation')=="updation":
+    
 
 if __name__ == '__main__':
   app.run(debug=True)
