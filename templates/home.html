@@ -1,121 +1,150 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
-        rel="stylesheet" 
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
-        crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-      <a href="/login">Login</a>
-        <div class="container">
-            <form class="row g-4" action="/search" autocomplete="off" method="post">
-                <div class="col-md-4">
-                    <label for="dep" class="form-label">DEPARTMENT</label>
-                    <input list="departments" name="depselect" placeholder="{{ DId }}" class="form-control" id="dep">
-                </div>
-                <div class="col-md-4">
-                    <label for="fac" class="form-label">FACULTY</label>
-                    <input list="Faculty" name="facselect" placeholder="{{FId}}" class="form-control" id="fac">
-                </div>
-                <div class="col-md-4">
-                  <label for="sem" class="form-label">SEMESTER</label>
-                  <input list="Semester" name="fromsem" placeholder="{{ fromsem }}" class="form-control" id="sem">
-                </div>
-                <div class="col-md-4">
-                    <label for="sem" class="form-label">SEMESTER</label>
-                    <input list="Semester" name="tillsem" placeholder="{{ tillsem }}" class="form-control" id="sem">
-                  </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary">SUBMIT</button>
-                </div>
-                <datalist id="departments">
-                    {% for i in departments %}
-                        <option value="{{ i[0] }}">
-                    {% endfor %}
-                </datalist>
-                <datalist id="Faculty">
-                    {% for i in fac %}
-                        <option value="{{ i[0] }}">{{ i[1]}}</option>
-                    {% endfor %}
-                </datalist>
-                <datalist id="Semester">
-                    {% for i in sem %}
-                        <option value="{{ i[0] }}">
-                    {% endfor %}
-                </datalist>
-              </form>
-              </div><br><br>
-        
-        
-        {% if result!=NULL %}
-            <div class="container">
-            <table class="table table-dark table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">COURSE ID</th>
-                    <th scope="col">COURSE NAME</th>
-                    <th scope="col">FACILTY ID</th>
-                    <th scope="col">FACULTY NAME</th>
-                    <th scope="col">SEMESTER</th>
-                    <th scope="col">NO OF STUDENTS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {% for i in result %}
-                    <th scope="row">{{i[0]}}</th>
-                        <td>{{ i[1] }}</td>
-                        <td>{{ i[2] }}</td>
-                        <td>{{ i[3] }}</td>
-                        <td>{{ i[4] }}</td>
-                        <td>{{ i[5] }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-        {% endif %}
-        </div>
-        <div class="container">
-            <form action="/coursesearch" method="post" >
-                <input name="depforcourse" list="departments">
-                <input type="submit">
-                <input name="selected_course" list="courselist">
-                <datalist id="courselist">
-                  {% for i in coursesel %}
-                      <option value="{{i[0]}}">{{ i[] }}</option>
-                  {% endfor %}
-                </datalist>
-                <input type="submit">
-            </form>
-            {% if courstim!=NULL %}
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+  </head>
+  <body>
+    <div class="page-content">
+    <br>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand">IIT INDORE</a>
+          <a href="/coursesearch" class="btn btn-outline-success">COURSE-DETAILS</a>
+          <a href="/login" class="btn btn-outline-success">Login</a>
+      </div>
+    </nav><br><br>
+    <div class="container">
+      <form class="row g-4" action="/search" autocomplete="off" method="post">
+          <div class="col-md-3">
+              <label for="dep" class="form-label">DEPARTMENT</label>
+              <input list="departments" name="depselect" placeholder="{{ DId }}" class="form-control" id="dep">
+          </div>
+          <div class="col-md-3">
+              <label for="fac" class="form-label">FACULTY</label>
+              <input list="Faculty" name="facselect" placeholder="{{FId}}" class="form-control" id="fac">
+          </div>
+          <div class="col-md-3">
+            <label for="sem" class="form-label">SEMESTER</label>
+            <input list="Semester" name="fromsem" placeholder="{{ fromsem }}" class="form-control" id="sem">
+          </div>
+          <div class="col-md-3">
+              <label for="sem" class="form-label">SEMESTER</label>
+              <input list="Semester" name="tillsem" placeholder="{{ tillsem }}" class="form-control" id="sem">
+            </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">SUBMIT</button>
+          </div>
+          <datalist id="departments">
+              {% for i in departments %}
+                  <option value="{{ i[0] }}">
+              {% endfor %}
+          </datalist>
+          <datalist id="Faculty">
+              {% for i in fac %}
+                  <option value="{{ i[0] }}">{{ i[1]}}</option>
+              {% endfor %}
+          </datalist>
+          <datalist id="Semester">
+              {% for i in sem %}
+                  <option value="{{ i[0] }}">
+              {% endfor %}
+          </datalist>
+        </form>
+        </div><br><br>
+  
+  
+  {% if result!=NULL %}
+      <div class="container">
+      <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th scope="col">COURSE ID</th>
+              <th scope="col">COURSE NAME</th>
+              <th scope="col">FACILTY ID</th>
+              <th scope="col">FACULTY NAME</th>
+              <th scope="col">SEMESTER</th>
+              <th scope="col">NO OF STUDENTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for i in result %}
+              <th scope="row">{{i[0]}}</th>
+                  <td>{{ i[1] }}</td>
+                  <td>{{ i[2] }}</td>
+                  <td>{{ i[3] }}</td>
+                  <td>{{ i[4] }}</td>
+                  <td>{{ i[5] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  {% endif %}
+  </div>
+  <div class="container">
+      <form action="/coursesearch" method="post" >
+          <input name="depforcourse" list="departments">
+          <input type="submit">
+          <input name="selected_course" list="courselist">
+          <datalist id="courselist">
+            {% for i in coursesel %}
+                <option value="{{i[0]}}">{{ i[] }}</option>
+            {% endfor %}
+          </datalist>
+          <input type="submit">
+      </form>
+      {% if courstim!=NULL %}
 
-            <table class="table table-dark table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">DAY</th>
-                  <th scope="col">TIME</th>
-                  <th scope="col">ROOM</th>
-                  <th scope="col">DURATION</th>
-                  <th scope="col">Faculty</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  {% for i in courstim %}
-                  <th scope="row">{{i[0]}}</th>
-                      <td>{{ i[1] }}</td>
-                      <td>{{ i[2] }}</td>
-                      <td>{{ i[3] }}</td>
-                      <td>{{ i[4] }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            {% endif %}
-        </div>
-    </body>
+      <table class="table table-dark table">
+        <thead>
+          <tr>
+            <th scope="col">COURSE</th>
+            <th scope="col">FACULTY</th>
+            <th scope="col">TIMETABLE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{ courstim[0][0] }}</th>
+                <td>{{ courstim[0][5] }}</td>
+                <td>
+                  <table class="table table-dark table">
+                    <thead>
+                      <tr>
+                        
+                          <TH>ROOM NO</TH>
+                          <th>DAY</th>
+                          <th>START TIME</th>
+                          <th>DURATION</th>
+                         
+                      </tr>
+                    </thead>
+                          <tbody>
+                            {% for i in courstim %}
+                            <tr>
+                              <TD>{{ i[3]}}</TD>
+                              <td>{{ i[1]}}</td>
+                              <td>{{ i[2]}}</td>
+                              <td>{{ i[4]}}</td></tr>
+                              {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+          </tr>
+        </tbody>
+      </table>
+      {% endif %}
+  </div>
+    </div>
+  </body>
 </html>
