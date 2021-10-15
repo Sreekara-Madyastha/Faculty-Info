@@ -87,7 +87,7 @@
                 <input name="selected_course" list="courselist">
                 <datalist id="courselist">
                   {% for i in coursesel %}
-                      <option value="{{i[0]}}">{{ i[] }}</option>
+                      <option value="{{i[0]}}">{{ i[0] }}</option>
                   {% endfor %}
                 </datalist>
                 <input type="submit">
@@ -120,24 +120,111 @@
         </div>
         {%if session['AId'] %}
           <form action="/change" method="post">
-            <input list="type" name="operation">
-            <datalist id="type">
+            <input list="typem" name="operation" id="query" oninput="see()">
+            <datalist id="typem">
               <option value="insertion">
               <option value="deletion">
               <option value="updation">
             </datalist>
-            <input name="changeon" list="func">
+            <div id="nextq"></div>
             <datalist id="func">
               <option value="Faculty_Info">
               <option value="course_Info">
               <option value="timings">
               <option value="teaching_Info">
             </datalist>
-            <input type="submit">
-            {% if sentdata!=NULL %}
-            {% endif %}
+            <datalist id="ccc">
+              <option value="timings">
+            </datalist>
+            <datalist id="clist">
+            {% for i in c%}
+                <option value="{{i[0]}}">{{i[1]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="DDay">
+            {% for i in tit%}
+                <option value="{{i[0]}}">{{i[0]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="RRoom">
+            {% for i in tit %}
+                <option value="{{i[1]}}">{{i[1]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="SSTime">
+            {% for i in tit %}
+                <option value="{{i[2]}}">{{i[2]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="CCId">
+            {% for i in tit %}
+                <option value="{{i[3]}}">{{i[3]}}</option>
+            {% endfor %}
+           </datalist>
+            <div id="arguments">
+            </div>
            </form>
-          <p>{{ hello }}</p>
+           <script>
+             function see(){
+               y=document.getElementById('nextq')
+                if(document.getElementById('query').value=='insertion'){
+                  y.innerHTML='<input name="changeon" id="changeon" list="func" oninput="call()">'
+                }
+                else{
+                  y.innerHTML='<input name="delin" id="delin" list="ccc" oninput="call()">'
+                }
+             }
+             function find(i){
+                var fill=[];
+                for(let j=0;j<tit.length;j++){
+                    fill.push(j[i])
+                }
+                return fill;
+             }
+             function call(){
+                a=document.getElementById('query')
+                d=document.getElementById('arguments')
+                if(a.value=='deletion'){
+                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input list="CCId" name="ccid"><input type="submit">'
+                }
+                else if(a.value=='insertion'){
+                  if(document.getElementById('changeon').value=="Faculty_Info"){
+                    d.innerHTML='<input type="text" placeholder="Faculty Name" name="newfacname"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="course_Info"){
+                    d.innerHTML='<input name="newcourse" placeholder="course ID" type="text"><input name="cname" placeholder="Course Name" type="text"><input list="departments" placeholder="of department" name="ofdep"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="teaching_Info"){
+                    d.innerHTML='<input name="teacher" list="Faculty"><input name="class" list="clist"><input type="text" name="semofnewcourse"><input type="text" name="noofstuds"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="timings"){
+                    d.innerHTML='<input name="day" type="text"><input name="starttime" type="text"><input type="text" name="room"><input list="clist" name="courseoftime"><input type="text" name="dur"><input type="submit">'
+                  }
+                }
+                else if(a.value=='updation'){
+                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input type="text" name="newcourse"><input type="submit">'
+                }
+              }
+           </script>
+           <p>{{ error }}</p>
         {%endif%}
+        <script>
+          document.getElementById('dep').onchange = function(){
+              department = document.getElementById('dep').value;
+              
+              fetch('/dept/' + department).then(function(response){
+
+                  response.json().then(function(data){
+                      console.table(data)
+                      let Html =' ';
+                      for( let dept of data.depts){
+                          Html+='<option value="' + dept.id + '">' + dept.name + '</option>';
+                      }
+
+                      document.getElementById('Faculty').innerHTML = Html;
+                  });
+              });
+          }
+      </script>
     </body>
 </html>

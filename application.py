@@ -1,6 +1,4 @@
-
-from dns.rdatatype import NULL
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session,jsonify
 from flask_session import Session
 import mysql.connector
 import os
@@ -82,11 +80,14 @@ sem=mycursor.fetchall()
 sem = my_function(sem)
 mycursor.execute('SELECT * from faculty')
 fac=mycursor.fetchall()
-
+mycursor.execute('SELECT * FROM courses')
+c=mycursor.fetchall()
+mycursor.execute('SELECT * FROM timetable')
+tit=mycursor.fetchall()
 @app.route("/")
 @app.route("/home")
 def begin():
-    return render_template("home.html",departments=departments,fac=fac,sem=sem)
+    return render_template("home.html",departments=departments,fac=fac,sem=sem,c=c,tit=tit)
 
        
 
@@ -104,7 +105,7 @@ def login_validation():
     password = request.form.get('password')
     mycursor.execute('SELECT * FROM authorizedPersonell WHERE Username=%s AND Password=%s',(Username,password))
     users = mycursor.fetchall()
-    if len(users) > 0:
+    if users:
         session['AId'] = users[0][0]
         return redirect('/home')
     else:
@@ -130,8 +131,67 @@ def add_user():
 
 @app.route('/change',methods=["GET","POST"])
 def change():
-  if request.form.get('operation')=="updation":
-    
+  operation=request.form.get('operation')
+  changeon= request.form.get('changeon')
+  if operation=="deletion":
+      mycursor.execute('SELECT * FROM timetable WHERE Day=%s AND Room=%s AND STime=%s AND CId=%s',(request.form.get('dday'),request.form.get('rroom'),request.form.get('sstime'),request.form.get('ccid')))
+      look=mycursor.fetchall()
+      if(look==[]):
+        return render_template("home.html",departments=departments,fac=fac,sem=sem,c=c,error="there is no such course at given time")
+      else:
+        mycursor.execute('DELETE FROM timetable WHERE Day=%s, Room=%s AND STIme=%s',(request.form.get('dday'),request.form.get('rroom'),request.form.get('sstime')))
+        mydb.commit()
+        return redirect('/')
+  elif operation=="insertion":
+    if changeon=="Faculty_Info":
+        mycursor.execute('INSERT INTO faculty(FName) values(%s)',(request.form.get('newfacname'),))
+        mydb.commit()
+        return redirect('/')
+    elif changeon=="course_Info":
+      mycursor.execute('SELECT * FROM courses WHERE CId=%s',(request.form.get('newcourse')))
+      look=mycursor.fetchall()
+      if(look!=[]):
+        return render_template("home.html",departments=departments,fac=fac,sem=sem,c=c,error="Course with same courseID already exists")
+      else:
+        mycursor.execute('INSERT INTO courses(CId,CName,DId) values(%s,%s,%s)',(request.form.get('newcourse'),request.form.get('cname'),request.form.get('ofdep')))
+        mydb.commit()
+        return redirect('/')
+    elif changeon=="teaching_Info":
+      mycursor.execute('INSERT into taughtby(CId,FId,Semester,NumStudents) values (%s,%s)',(request.form.get('class'),request.form.get('teacher'),request.form.get('semofnewcourse'),request.form.get('noofstuds')))
+      mydb.commit()
+      return redirect('/')
+    elif changeon=="timings":
+      mycursor.execute('SELECT * FROM timetable WHERE Day=%s AND STime=%s AND ROOM=%s',(request.form.get('day'),request.form.get('starttime'),request.form.get('room')))
+      look=mycursor.fetchall()
+      if look!=[]:
+        return render_template("home.html",departments=departments,fac=fac,sem=sem,c=c,error="There already exists on same day same room at that time")
+      else:
+        mycursor.execute('INSERT into timetable(Day,STime,Room,CId,DurationMins)values(%s,%s,%s,%s,%s)',(request.form.get('day'),request.form.get('starttime'),request.form.get('room'),request.form.get('courseoftime'),request.form.get('dur')))
+        mydb.commit()
+        return redirect('/')
+  elif operation=="updation":
+    mycursor.execute('SELECT * FROM timetable WHERE Day=%s AND STime=%s AND ROOM=%s',(request.form.get('dday'),request.form.get('sstime'),request.form.get('rroom')))
+    look=mycursor.fetchall()
+    if look==[]:
+      return render_template("home.html",departments=departments,fac=fac,sem=sem,c=c,error="There is no course at given time")
+    else:
+      mycursor.execute('UPDATE timings SET CId=%s',(request.form.get('ccid')))
+      mydb.commit()
+      return redirect('/')
+  return redirect('/')
+@app.route('/dept/<department>')
+def dept(department):
+  mycursor.execute('SELECT DISTINCT taughtby.FId,faculty.FName FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s)',('%'+department+'%',"%"))
+  result=mycursor.fetchall()
+  print(result)
+  res=[]
+  for r in result:
+    resobj={}
+    resobj['id']=r[0]
+    resobj['name']=r[1]
+    res.append(resobj)
+
+  return jsonify({'depts' : res})
 
 if __name__ == '__main__':
   app.run(debug=True)
