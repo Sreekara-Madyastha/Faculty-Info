@@ -25,43 +25,48 @@
           </div>
         </nav><br><br>
         <div class="container">
-            <form class="row g-4" action="/search" autocomplete="off" method="post">
+          <form class="row g-4" action="/search" autocomplete="off" method="post">
               <div class="col-md-3">
-                <label for="dep" class="form-label">DEPARTMENT</label>
-                <input list="departments" name="depselect" placeholder="{{ DId }}" class="form-control" id="dep">
-            </div>
-            <div class="col-md-3">
-                <label for="fac" class="form-label">FACULTY</label>
-                <input list="Faculty" name="facselect" placeholder="{{FId}}" class="form-control" id="fac">
-            </div>
-            <div class="col-md-3">
-              <label for="sem" class="form-label">SEMESTER</label>
-              <input list="Semester" name="fromsem" placeholder="{{ fromsem }}" class="form-control" id="sem">
-            </div>
-            <div class="col-md-3">
-                <label for="sem" class="form-label">SEMESTER</label>
-                <input list="Semester" name="tillsem" placeholder="{{ tillsem }}" class="form-control" id="sem">
+                  <label for="dep" class="form-label">DEPARTMENT</label>
+                  <input list="departments" name="depselect" placeholder="Select Department" class="form-control" id="dep">
               </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary">SUBMIT</button>
+              <div class="col-md-3">
+                  <label for="fac" class="form-label">FACULTY</label>
+                  <input list="Faculty" name="facselect" placeholder="Select Faculty" class="form-control" id="fac">
+              </div>
+              <div class="col-md-3">
+                <label for="sem" class="form-label">FROM SEM</label>
+                <input required list="Semester1" name="fromsem" placeholder="Select Sem1" class="form-control" id="sem1">
+              </div>
+              <div class="col-md-3">
+                  <label for="sem" class="form-label">TO SEM</label>
+                  <input required list="Semester" name="tillsem" placeholder="Select Sem2" class="form-control" id="sem2">
                 </div>
-                <datalist id="departments">
-                    {% for i in departments %}
-                        <option value="{{ i[0] }}">
-                    {% endfor %}
-                </datalist>
-                <datalist id="Faculty">
-                    {% for i in fac %}
-                        <option value="{{ i[0] }}">{{ i[1]}}</option>
-                    {% endfor %}
-                </datalist>
-                <datalist id="Semester">
-                    {% for i in sem %}
-                        <option value="{{ i[0] }}">
-                    {% endfor %}
-                </datalist>
-              </form>
-              </div><br><br>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">SUBMIT</button>
+              </div>
+              <datalist id="departments">
+                  {% for i in departments %}
+                      <option value="{{ i[0] }}">
+                  {% endfor %}
+              </datalist>
+              <datalist id="Faculty">
+                  {% for i in fac %}
+                      <option value="{{ i[0] }}">{{ i[1]}}</option>
+                  {% endfor %}
+              </datalist>
+              <datalist id="Semester">
+                  {% for i in sem %}
+                      <option value="{{ i[0] }}">
+                  {% endfor %}
+              </datalist>
+              <datalist id="Semester1">
+                  {% for i in sem %}
+                      <option value="{{ i[0] }}">
+                  {% endfor %}
+              </datalist>
+            </form>
+            </div><br><br>
         
         
         {% if result!=NULL %}
@@ -95,6 +100,41 @@
         
         </div>
         </div>
-        
+        <script>
+          document.getElementById('dep').onchange = function(){
+              department = document.getElementById('dep').value;
+              
+              fetch('/dept/' + department).then(function(response){
+
+                  response.json().then(function(data){
+                      // console.table(data)
+                      let Html =' ';
+                      for( let dept of data.depts){
+                          Html+='<option value="' + dept.id + '">' + dept.name + '</option>';
+                      }
+
+                      document.getElementById('Faculty').innerHTML = Html;
+                  });
+              });
+          }
+      </script>
+      <script>
+        document.getElementById('sem1').onchange = function(){
+            department = document.getElementById('sem1').value;
+            
+            fetch('/dept2/' + department).then(function(response){
+
+                response.json().then(function(data){
+                    // console.table(data)
+                    let Html =' ';
+                    for( let dept of data.depts){
+                        Html+='<option value="' + dept.id + '">';
+                    }
+
+                    document.getElementById('Semester').innerHTML = Html;
+                });
+            });
+        }
+    </script>
     </body>
 </html>
