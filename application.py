@@ -8,7 +8,7 @@ app.secret_key = os.urandom(10)
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Sreek@r123",
+  password="Varshitha@24",
   database="courses_faculty"
 )
 mycursor=mydb.cursor()
@@ -66,22 +66,37 @@ def time():
   departments=mycursor.fetchall() 
   return render_template('timetable.html',departments=departments)
 
+# @app.route('/coursesearch',methods=["GET","POST"])
+# def course():
+#   dep=request.form.get('deps')
+#   course=request.form.get('selected_course')
+#   if(course==""):
+#     mycursor.execute('SELECT * FROM courses WHERE DId=%s ',(request.form.get('deps'),))
+#     c=mycursor.fetchall()
+#     return render_template('timetable.html',departments=departments,c=c)
+#   else:
+#     v='Autumn 2021'
+#     mycursor.execute('SELECT timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester =%s)',(request.form.get('selected_course'),v))
+#     courstim=mycursor.fetchall()
+#     print(courstim)
+#     return render_template('timetable.html',courstim=courstim, departments=departments)
+    
 @app.route('/coursesearch',methods=["GET","POST"])
 def course():
-  dep=request.form.get('deps')
-  course=request.form.get('selected_course')
-  if(course==""):
-    mycursor.execute('SELECT * FROM courses WHERE DId=%s ',(request.form.get('deps'),))
-    c=mycursor.fetchall()
-    return render_template('timetable.html',departments=departments,c=c)
-  else:
-    v='Autumn 2021'
-    mycursor.execute('SELECT timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester =%s)',(request.form.get('selected_course'),v))
+  if request.form.get('selected_course')!="":
+    mycursor.execute('SELECT timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName, taughtby.CId FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester LIKE %s)',(request.form.get('selected_course'),'Autumn 2021'))
     courstim=mycursor.fetchall()
-    print(courstim)
+    if courstim!=[]:
+      #print(courstim)
+      return render_template('timetable.html',courstim=courstim, departments=departments)
+    else:
+      print("The selected course had no scheduled classes in the present semester")
+      return render_template('timetable.html', message="The selected course had no scheduled classes in the present semester")
     return render_template('timetable.html',courstim=courstim, departments=departments)
-    
-
+  else:
+    mycursor.execute('SELECT * FROM courses WHERE DId=%s',(request.form.get('depforcourse'),))
+    coursesel=mycursor.fetchall()
+    return render_template('timetable.html',coursesel=coursesel, departments=departments)
 
 
 mycursor.execute('SELECT * FROM departments')
@@ -123,7 +138,10 @@ def login_validation():
         return render_template('login.html', error_message="Invalid Username or Password")
 @app.route('/access',methods=["GET","POST"])
 def access():
-  return render_template('access.html')
+  if 'AId' in session:
+    return render_template('access.html')
+  else:
+   redirect('/login')
 
 @app.route('/register')
 def register():
@@ -192,9 +210,11 @@ def change():
       mydb.commit()
       return redirect('/access')
   return redirect('/access')
+
+
 @app.route('/dept/<department>')
 def dept(department):
-  mycursor.execute('SELECT DISTINCT taughtby.FId,faculty.FName FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s)',('%'+department+'%',"%"))
+  mycursor.execute('SELECT DISTINCT taughtby.FId,faculty.FName FROM ((taughtby INNER JOIN courses ON courses.CId=taughtby.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE( courses.DId LIKE %s AND taughtby.FId LIKE %s) ORDER BY taughtby.FId',('%'+department+'%',"%"))
   result=mycursor.fetchall()
   print(result)
   res=[]
@@ -206,6 +226,32 @@ def dept(department):
 
   return jsonify({'depts' : res})
 
+@app.route('/dept1/<department>')
+def dept1(department):
+  mycursor.execute('SELECT * FROM courses WHERE DId=%s',(department,))
+  result=mycursor.fetchall()
+  # print(result)
+  res=[]
+  for r in result:
+    resobj={}
+    resobj['id']=r[0]
+    res.append(resobj)
+
+  return jsonify({'depts' : res})
+
+
+@app.route('/dept2/<department>')
+def dept2(department):
+  mycursor.execute('SELECT Distinct Semester FROM taughtby WHERE Semester>=%s',(department,))
+  result=mycursor.fetchall()
+  #print(result)
+  res=[]
+  for r in result:
+    resobj={}
+    resobj['id']=r[0]
+    res.append(resobj)
+
+  return jsonify({'depts' : res})
+
 if __name__ == '__main__':
   app.run(debug=True)
-
