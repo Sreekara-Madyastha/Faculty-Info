@@ -63,7 +63,7 @@ def search():
 @app.route('/coursesearch',methods=["GET","POST"])
 def course():
   if request.form.get('selected_course')!="":
-    mycursor.execute('SELECT timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester LIKE %s)',(request.form.get('selected_course'),'%'))
+    mycursor.execute('SELECT timetable.CId,timetable.Day,timetable.Stime,timetable.Room,timetable.DurationMins,faculty.FName FROM ((timetable INNER JOIN taughtby ON taughtby.CId=timetable.CId) INNER JOIN faculty ON taughtby.FId=faculty.FId) WHERE (taughtby.CId=%s AND taughtby.Semester LIKE %s)',(request.form.get('selected_course'),'%'))
     courstim=mycursor.fetchall()
     return render_template('home.html',courstim=courstim, departments=departments)
   else:
