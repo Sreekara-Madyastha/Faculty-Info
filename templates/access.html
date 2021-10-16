@@ -11,77 +11,80 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
-    </head>
-    <body>
-      <a href="/logout">logout</a>
+      </head>
+      <body>
+        <a href="/logout">logout</a>
         <datalist id="departments">
-            {% for i in departments %}
+          {% for i in departments %}
                 <option value="{{ i[0] }}">
-            {% endfor %}
-        </datalist>
-        <datalist id="Faculty">
-            {% for i in fac %}
-                <option value="{{ i[0] }}">{{ i[1]}}</option>
-            {% endfor %}
-        </datalist>
-        <datalist id="Semester">
-            {% for i in sem %}
-                <option value="{{ i[0] }}">
+                  {% endfor %}
+                </datalist>
+                <datalist id="Faculty">
+                  {% for i in fac %}
+                  <option value="{{ i[0] }}">{{ i[1]}}</option>
+                  {% endfor %}
+                </datalist>
+                <datalist id="Semester">
+                  {% for i in sem %}
+                  <option value="{{ i[0] }}">
             {% endfor %}
         </datalist>
           <form action="/change" method="post">
-            <input list="typem" name="operation" id="query" oninput="see()">
+            <label for="operation" class="form-label">What operation do you want to perform?</label>
+            
+            <input list="typem" name="operation" id="query" oninput="see()" placeholder="Select Operation" id="operation">
             <datalist id="typem">
               <option value="insertion">
-              <option value="deletion">
-              <option value="updation">
-            </datalist>
-            <div id="nextq"></div>
-            <datalist id="func">
+                <option value="deletion">
+                  <option value="updation">
+                  </datalist>
+                  <div id="nextq"></div>
+                  <datalist id="func">
               <option value="Faculty_Info">
-              <option value="course_Info">
+                <option value="course_Info">
               <option value="timings">
               <option value="teaching_Info">
-            </datalist>
-            <datalist id="ccc">
-              <option value="timings">
+              </datalist>
+              <datalist id="ccc">
+                <option value="timings">
             </datalist>
             <datalist id="clist">
-            {% for i in c%}
-                <option value="{{i[0]}}">{{i[1]}}</option>
-            {% endfor %}
+              {% for i in c%}
+              <option value="{{i[0]}}">{{i[1]}}</option>
+              {% endfor %}
            </datalist>
            <datalist id="DDay">
-            {% for i in tit%}
+             {% for i in tit%}
                 <option value="{{i[0]}}">{{i[0]}}</option>
-            {% endfor %}
-           </datalist>
-           <datalist id="RRoom">
-            {% for i in tit %}
+                {% endfor %}
+              </datalist>
+              <datalist id="RRoom">
+                {% for i in tit %}
                 <option value="{{i[1]}}">{{i[1]}}</option>
             {% endfor %}
-           </datalist>
+          </datalist>
            <datalist id="SSTime">
+             {% for i in tit %}
+             <option value="{{i[2]}}">{{i[2]}}</option>
+            {% endfor %}
+          </datalist>
+          <datalist id="CCId">
             {% for i in tit %}
-                <option value="{{i[2]}}">{{i[2]}}</option>
+            <option value="{{i[3]}}">{{i[3]}}</option>
             {% endfor %}
            </datalist>
-           <datalist id="CCId">
-            {% for i in tit %}
-                <option value="{{i[3]}}">{{i[3]}}</option>
-            {% endfor %}
-           </datalist>
-            <div id="arguments">
-            </div>
            </form>
+           <div id="arguments">
+          </div>
+           
            <script>
              function see(){
                y=document.getElementById('nextq')
                 if(document.getElementById('query').value=='insertion'){
-                  y.innerHTML='<input name="changeon" id="changeon" list="func" oninput="call()">'
+                  y.innerHTML='<label for="changeon"  class="form-label">Insert data into:&ensp; </label><input name="changeon" id="changeon" list="func" placeholder="Select Table" oninput="call()">'
                 }
                 else{
-                  y.innerHTML='<input name="delin" id="delin" list="ccc" oninput="call()">'
+                  y.innerHTML='<input name="delin" id="delin" list="ccc" oninput="call()" placeholder="Select table">'
                 }
              }
              function find(i){
@@ -95,24 +98,24 @@
                 a=document.getElementById('query')
                 d=document.getElementById('arguments')
                 if(a.value=='deletion'){
-                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input list="CCId" name="ccid"><input type="submit">'
+                  d.innerHTML='<input list="DDay" name="dday" placeholder="Enter Day"><input list="RRoom" name="rroom" placeholder="Enter Room"><input list="SSTime" name="sstime" placeholder="Enter Start-Time"><input list="CCId" name="ccid" placeholder="Enter Course-ID"><input type="submit">'
                 }
                 else if(a.value=='insertion'){
                   if(document.getElementById('changeon').value=="Faculty_Info"){
                     d.innerHTML='<input type="text" placeholder="Faculty Name" name="newfacname"><input type="submit">'
                   }
                   else if(document.getElementById('changeon').value=="course_Info"){
-                    d.innerHTML='<input name="newcourse" placeholder="course ID" type="text"><input name="cname" placeholder="Course Name" type="text"><input list="departments" placeholder="of department" name="ofdep"><input type="submit">'
+                    d.innerHTML='<input name="newcourse" placeholder="Course-ID" type="text"><input name="cname" placeholder="Course Name" type="text"><input list="departments" placeholder="Department" name="ofdep"><input type="submit">'
                   }
                   else if(document.getElementById('changeon').value=="teaching_Info"){
-                    d.innerHTML='<input name="teacher" list="Faculty"><input name="class" list="clist"><input type="text" name="semofnewcourse"><input type="text" name="noofstuds"><input type="submit">'
+                    d.innerHTML='<input name="teacher" list="Faculty" placeholder="Enter Faculty Name"><input name="class" list="clist" placeholder="Course"><input type="text" name="semofnewcourse" placeholder="Semester"><input type="text" name="noofstuds" placeholder="Number of Students"><input type="submit">'
                   }
                   else if(document.getElementById('changeon').value=="timings"){
-                    d.innerHTML='<input name="day" type="text"><input name="starttime" type="text"><input type="text" name="room"><input list="clist" name="courseoftime"><input type="text" name="dur"><input type="submit">'
+                    d.innerHTML='<input name="day" type="text" placeholder="Day"><input name="starttime" type="text" placeholder="Start-Time"><input type="text" name="room" placeholder="Room"><input list="clist" name="courseoftime" placeholder="Course"><input type="text" name="dur" placeholder="Duration"><input type="submit">'
                   }
                 }
                 else if(a.value=='updation'){
-                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input type="text" name="newcourse"><input type="submit">'
+                  d.innerHTML='<input list="DDay" name="dday" placeholder="Day"><input list="RRoom" name="rroom" placeholder="Room"><input list="SSTime" name="sstime" placeholder="Start-Time"><input type="text" name="newcourse" placeholder="Course"><input type="submit">'
                 }
               }
            </script>
