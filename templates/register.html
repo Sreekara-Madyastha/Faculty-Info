@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="page-content">
+      <div class="form-content">
+        <div class="form-left">
+          <img
+            src="{{ url_for('static', filename='/images/iiti-2.jpg') }}"
+            alt="IIT INDORE"
+            class="img1"
+            width="600"
+            height="590"
+          />
+        </div>
+        <form class="form-detail" action="\add_user" method="post" autocomplete="off">
+          <h2>Create Account</h2>
+          <div class="form-row">
+            <input
+              type="text"
+              name="reg_Username"
+              id="name"
+              class="input-text"
+              placeholder="Create Username"
+              required
+              autofocus
+            />
+          </div>
+          <div class="form-row">
+            <input
+              type="text"
+              name="reg_Email"
+              id="email"
+              class="input-text"
+              placeholder="Enter your IITI Email ID"
+              required
+              pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}"
+            />
+          </div>
+          
+          <div class="form-row">
+            <input
+              type="password"
+              name="reg_Password"
+              id="password"
+              class="input-text"
+              placeholder="Create Password"
+              required
+            />
+          <div class="form-row-bottom" style="align-items: center;">
+            <input
+              type="submit"
+              name="register"
+              class="register"
+              value="Register"
+            />
+          </div>
+          <p class="form_text">
+                <a href="/login" class="form_link" id="linkLogin">Already have an account? Sign in</a>
+            </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

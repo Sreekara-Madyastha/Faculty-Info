@@ -1,0 +1,154 @@
+body {
+  margin: 0;
+  background: linear-gradient(-49deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+@keyframes gradient {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+.page-content {
+  width: 100%;
+  margin: 0 auto;
+  display: -webkit-flex;
+  justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  -moz-justify-content: center;
+  -webkit-justify-content: center;
+  align-items: center;
+  -o-align-items: center;
+  -ms-align-items: center;
+  -moz-align-items: center;
+  -webkit-align-items: center;
+}
+.form-content {
+  background: #fff;
+  width: 1200px;
+  border-radius: 8px;
+  -o-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  margin: 180px 0;
+  font-family: "Nunito", sans-serif;
+  color: #fff;
+  font-weight: 700;
+  position: relative;
+  display: flex;
+  display: -webkit-flex;
+}
+.form-content .form-left {
+  margin-bottom: -6px;
+}
+.form-content .form-left img {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.form-content .form-detail {
+  padding: 30px 40px;
+  position: relative;
+  width: 100%;
+}
+.form-content .form-detail h2 {
+  color: #333;
+  font-size: 35px;
+  text-align: center;
+  position: relative;
+  padding: 6px 0 0;
+  margin-bottom: 47px;
+}
+.form-content .form-row {
+  width: 100%;
+}
+.form-content .form-detail .form-row-last {
+  text-align: center;
+}
+.form-content .form-detail .input-text {
+  margin-bottom: 35px;
+}
+.form-content .form-detail input {
+  width: 92%;
+  padding: 0px 15px 10px 15px;
+  border: 2px solid transparent;
+  border-bottom: 2px solid #e5e5e5;
+  appearance: unset;
+  -moz-appearance: unset;
+  -webkit-appearance: unset;
+  -o-appearance: unset;
+  -ms-appearance: unset;
+  outline: none;
+  -moz-outline: none;
+  -webkit-outline: none;
+  -o-outline: none;
+  -ms-outline: none;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+.form-content .form-detail .form-row input:focus {
+  border-bottom: 2px solid #fe892a;
+  transition: border-color 0.4s;
+}
+.form-content .form-detail .register {
+  background: #fe892a;
+  border-radius: 6px;
+  -o-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  width: 160px;
+  box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -o-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -ms-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  border: none;
+  margin: 11px 0 50px 0px;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+}
+.form-content .form-detail .register:hover {
+  background: #e37b27;
+}
+.form-content .form-detail .form-row-bottom input {
+  padding: 13px;
+}
+input::-webkit-input-placeholder {
+  color: #666;
+  font-size: 16px;
+}
+input::-moz-placeholder {
+  color: #666;
+  font-size: 16px;
+}
+input:-ms-input-placeholder {
+  color: #666;
+  font-size: 16px;
+}
+input:-moz-placeholder {
+  color: #666;
+  font-size: 16px;
+}
+.message {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.form_text {
+  text-align: center;
+  margin-top: -0.5rem;
+}
+

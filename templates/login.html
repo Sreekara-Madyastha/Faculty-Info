@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Login</title>
+  </head>
+  <body>
+    <div class="page-content">
+      <div class="form-content">
+        <div class="form-left">
+          <img
+            src="{{ url_for('static', filename='/images/iiti-2.jpg') }}"
+            alt="IIT INDORE"
+            class="img1"
+            width="600"
+            height="590"
+          />
+        </div>
+        <form class="form-detail" action="\login_validation" method="post" autocomplete="off">
+          <h2>Login</h2>
+          <div class="message" style="color: red;">{{error_message}}</div>
+          <div class="message" style="color: green;">{{after_reg_message}}</div>
+          <div class="form-row">
+            <input
+              type="text"
+              name="Username"
+              id="name"
+              class="input-text"
+              placeholder="Enter Username"
+              required
+              autofocus
+            />
+          </div> 
+          <div class="form-row">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="input-text"
+              placeholder="Enter Password"
+              required
+            />
+          <div class="form-row-bottom" align="center">
+            <input
+              type="submit"
+              name="register"
+              class="register"
+              value="Submit"
+            />
+          </div>
+          <p class="form_text">
+                <a href="/register" class="form_link" id="linkCreateAccount">Don't have an account? Create account</a>
+            </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

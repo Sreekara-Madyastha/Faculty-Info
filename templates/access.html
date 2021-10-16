@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+    </head>
+    <body>
+      <a href="/logout">logout</a>
+        <datalist id="departments">
+            {% for i in departments %}
+                <option value="{{ i[0] }}">
+            {% endfor %}
+        </datalist>
+        <datalist id="Faculty">
+            {% for i in fac %}
+                <option value="{{ i[0] }}">{{ i[1]}}</option>
+            {% endfor %}
+        </datalist>
+        <datalist id="Semester">
+            {% for i in sem %}
+                <option value="{{ i[0] }}">
+            {% endfor %}
+        </datalist>
+          <form action="/change" method="post">
+            <input list="typem" name="operation" id="query" oninput="see()">
+            <datalist id="typem">
+              <option value="insertion">
+              <option value="deletion">
+              <option value="updation">
+            </datalist>
+            <div id="nextq"></div>
+            <datalist id="func">
+              <option value="Faculty_Info">
+              <option value="course_Info">
+              <option value="timings">
+              <option value="teaching_Info">
+            </datalist>
+            <datalist id="ccc">
+              <option value="timings">
+            </datalist>
+            <datalist id="clist">
+            {% for i in c%}
+                <option value="{{i[0]}}">{{i[1]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="DDay">
+            {% for i in tit%}
+                <option value="{{i[0]}}">{{i[0]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="RRoom">
+            {% for i in tit %}
+                <option value="{{i[1]}}">{{i[1]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="SSTime">
+            {% for i in tit %}
+                <option value="{{i[2]}}">{{i[2]}}</option>
+            {% endfor %}
+           </datalist>
+           <datalist id="CCId">
+            {% for i in tit %}
+                <option value="{{i[3]}}">{{i[3]}}</option>
+            {% endfor %}
+           </datalist>
+            <div id="arguments">
+            </div>
+           </form>
+           <script>
+             function see(){
+               y=document.getElementById('nextq')
+                if(document.getElementById('query').value=='insertion'){
+                  y.innerHTML='<input name="changeon" id="changeon" list="func" oninput="call()">'
+                }
+                else{
+                  y.innerHTML='<input name="delin" id="delin" list="ccc" oninput="call()">'
+                }
+             }
+             function find(i){
+                var fill=[];
+                for(let j=0;j<tit.length;j++){
+                    fill.push(j[i])
+                }
+                return fill;
+             }
+             function call(){
+                a=document.getElementById('query')
+                d=document.getElementById('arguments')
+                if(a.value=='deletion'){
+                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input list="CCId" name="ccid"><input type="submit">'
+                }
+                else if(a.value=='insertion'){
+                  if(document.getElementById('changeon').value=="Faculty_Info"){
+                    d.innerHTML='<input type="text" placeholder="Faculty Name" name="newfacname"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="course_Info"){
+                    d.innerHTML='<input name="newcourse" placeholder="course ID" type="text"><input name="cname" placeholder="Course Name" type="text"><input list="departments" placeholder="of department" name="ofdep"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="teaching_Info"){
+                    d.innerHTML='<input name="teacher" list="Faculty"><input name="class" list="clist"><input type="text" name="semofnewcourse"><input type="text" name="noofstuds"><input type="submit">'
+                  }
+                  else if(document.getElementById('changeon').value=="timings"){
+                    d.innerHTML='<input name="day" type="text"><input name="starttime" type="text"><input type="text" name="room"><input list="clist" name="courseoftime"><input type="text" name="dur"><input type="submit">'
+                  }
+                }
+                else if(a.value=='updation'){
+                  d.innerHTML='<input list="DDay" name="dday"><input list="RRoom" name="rroom"><input list="SSTime" name="sstime"><input type="text" name="newcourse"><input type="submit">'
+                }
+              }
+           </script>
+           <p>{{ error }}</p>
+           <a href="/register">ADD USER</a>
+        <script>
+          document.getElementById('dep').onchange = function(){
+              department = document.getElementById('dep').value;
+              
+              fetch('/dept/' + department).then(function(response){
+
+                  response.json().then(function(data){
+                      console.table(data)
+                      let Html =' ';
+                      for( let dept of data.depts){
+                          Html+='<option value="' + dept.id + '">' + dept.name + '</option>';
+                      }
+
+                      document.getElementById('Faculty').innerHTML = Html;
+                  });
+              });
+          }
+      </script>
+    </body>
+</html>
